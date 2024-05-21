@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="//elixir-lang.org/favicon.ico">
+<style>
+div {
+  font-size: 1.2em;
+  margin: 2em;
+  font-family: -apple-system, Helvetica, Arial,
+  sans-serif;
+}
+span {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  white-space: pre;
+}
+.p {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+}
+</style>
+<title>Elixir Install</title>
+</head>
+<body>
+<div>
+  <h1>Elixir Install</h1>
+  Elixir Install makes it easy to install Elixir.
+</div>
+
+<div>
+<span class="p"># bash (macOS / Ubuntu / Windows)
+</span><span class="p">$ </span><span>curl -fsSO https://elixir-install.org/install.sh
+</span><span class="p">$ </span><span>sh install.sh elixir@1.17.3 otp@27.1
+</span><span class="p">$ </span><span>export PATH=$HOME/.elixir-install/installs/otp/27.1/bin:$PATH
+</span><span class="p">$ </span><span>export PATH=$HOME/.elixir-install/installs/elixir/1.17.3-otp-27/bin:$PATH
+</span><span class="p">$ </span><span>iex</span>
+</div>
+
+<div>
+<span class="p"># PowerShell (Windows)
+</span><span class="p">&gt; </span><span>curl.exe -fsSO https://elixir-install.org/install.bat
+</span><span class="p">&gt; </span><span>.\install.bat elixir@1.17.3 otp@27.1
+</span><span class="p">&gt; </span><span>$env:PATH = "$env:USERPROFILE\.elixir-install\installs\otp\27.1\bin;$env:PATH"
+</span><span class="p">&gt; </span><span>$env:PATH = "$env:USERPROFILE\.elixir-install\installs\elixir\1.17.3-otp-27\bin;$env:PATH"
+</span><span class="p">&gt; </span><span>iex.bat</span>
+</div>
+
+<div>
+  by <a href="https://github.com/wojtekmach"><span>@wojtekmach</span></a> | <a href="https://github.com/elixir-install/elixir-install.github.io">GitHub</a>
+</div>
+</body>
+</html>

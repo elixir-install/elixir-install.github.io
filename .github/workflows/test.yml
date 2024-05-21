@@ -1,0 +1,79 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test_macos:
+    name: Test - install.sh (macOS)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test
+        run: |
+          sh install.sh elixir@1.17.3 otp@27.1
+          export PATH=$HOME/.elixir-install/installs/otp/27.1/bin:$PATH
+          export PATH=$HOME/.elixir-install/installs/elixir/1.17.3-otp-27/bin:$PATH
+          elixir -e "IEx.Helpers.runtime_info(:system)"
+
+  test_ubuntu:
+    name: Test - install.sh (Ubuntu)
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test
+        run: |
+          sh install.sh elixir@1.17.3 otp@27.1
+          export PATH=$HOME/.elixir-install/installs/otp/27.1/bin:$PATH
+          export PATH=$HOME/.elixir-install/installs/elixir/1.17.3-otp-27/bin:$PATH
+          elixir -e "IEx.Helpers.runtime_info(:system)"
+
+  test_windows_sh:
+    name: Test - install.sh (Windows)
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test
+        shell: bash
+        run: |
+          sh install.sh elixir@1.17.3 otp@27.1
+          export PATH=$HOME/.elixir-install/installs/otp/27.1/bin:$PATH
+          export PATH=$HOME/.elixir-install/installs/elixir/1.17.3-otp-27/bin:$PATH
+          elixir -e "IEx.Helpers.runtime_info(:system)"
+
+  test_windows_ps1:
+    name: Test - install.ps1 (Windows)
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test
+        run: |
+          pwsh install.ps1 elixir@1.17.3 otp@27.1
+          $env:PATH = "$env:USERPROFILE\.elixir-install\installs\otp\27.1\bin;$env:PATH"
+          $env:PATH = "$env:USERPROFILE\.elixir-install\installs\elixir\1.17.3-otp-27\bin;$env:PATH"
+          elixir -e "IEx.Helpers.runtime_info :system"
+
+  test_windows_bat:
+    name: Test - install.bat (Windows)
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test
+        run: |
+          .\install.bat elixir@1.17.3 otp@27.1
+          $env:PATH = "$env:USERPROFILE\.elixir-install\installs\otp\27.1\bin;$env:PATH"
+          $env:PATH = "$env:USERPROFILE\.elixir-install\installs\elixir\1.17.3-otp-27\bin;$env:PATH"
+          elixir -e "IEx.Helpers.runtime_info :system"
