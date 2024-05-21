@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="//elixir-lang.org/favicon.ico">
+<style>
+div {
+  font-size: 1.2em;
+  margin: 2em;
+}
+span {
+  font-family: monospace;
+  white-space: pre;
+}
+.p {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+}
+</style>
+<title>Elixir Install</title>
+</head>
+<body>
+<div>
+  <h1>Elixir Install</h1>
+  Elixir Install makes it easy to install Elixir (<a href="https://github.com/elixir-install/elixir-install.github.io">GitHub</a>).
+</div>
+
+<div>
+<span class="p"># bash (macOS / Ubuntu / Windows)
+</span><span class="p">$ </span><span>curl --fail -LO https://elixir-install.org/elixir-install
+</span><span class="p">$ </span><span>sh elixir-install elixir@1.17.2 otp@27.0.1
+</span><span class="p">$ </span><span>export PATH=$HOME/.elixir-install/installs/otp/27.0.1/bin:$PATH
+</span><span class="p">$ </span><span>export PATH=$HOME/.elixir-install/installs/elixir/1.17.2-otp-27/bin:$PATH
+</span><span class="p">$ </span><span>iex</span>
+</div>
+
+<div>
+<span class="p">:: cmd (Windows)
+</span><span class="p">&gt; </span><span>curl --fail -LO https://elixir-install.org/elixir-install.bat
+</span><span class="p">&gt; </span><span>.\elixir-install.bat elixir@1.17.2 otp@27.0.1
+</span><span class="p">&gt; </span><span>set PATH=%LOCALAPPDATA%\elixir-install\installs\otp\27.0.1\bin;%PATH%
+</span><span class="p">&gt; </span><span>set PATH=%LOCALAPPDATA%\elixir-install\installs\elixir\1.17.2-otp-27\bin;%PATH%
+</span><span class="p">&gt; </span><span>iex</span>
+</div>
+</body>
+</html>
