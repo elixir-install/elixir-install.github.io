@@ -45,18 +45,18 @@ echo    set PATH=%%LOCALAPPDATA%%\elixir-install\installs\elixir\%elixir_version
 goto :eof
 
 :install_otp
-set otp_exe=otp_win64_%otp_version%.exe
+set otp_zip=OTP-%otp_version%-windows-amd64.zip
 
 if not exist "%otp_dir%\bin" (
-    if not exist "%tmp_dir%\%otp_exe%" (
-      set otp_url=https://github.com/erlang/otp/releases/download/OTP-%otp_version%/%otp_exe%
+    if not exist "%tmp_dir%\%otp_zip%" (
+      set otp_url=https://github.com/elixir-install/otp_builds/releases/download/OTP-%otp_version%/%otp_zip%
       echo downloading !otp_url!...
-      curl --fail -L -o %tmp_dir%\%otp_exe% !otp_url!
+      curl --fail -L -o %tmp_dir%\%otp_zip% !otp_url!
     )
-    echo running %tmp_dir%\%otp_exe%...
-    %tmp_dir%\%otp_exe% /S /D=%otp_dir%
-    REM permission error for some reason:
-    REM del /f /q %tmp_dir%\%otp_exe%
+    powershell -Command "Expand-Archive -LiteralPath %tmp_dir%\%otp_zip% -DestinationPath %otp_dir%"
+    del /f /q %tmp_dir%\%otp_zip%
+    cd %otp_dir%
+    .\Install.exe -sasl
 )
 goto :eof
 

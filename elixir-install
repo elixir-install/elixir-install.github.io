@@ -62,22 +62,19 @@ install_otp() {
 
   if [ ! -d $otp_dir/bin ]; then
     if [ "$os" = "windows" ]; then
-      local otp_exe="otp_win64_$otp_version.exe"
+      local otp_zip="OTP-$otp_version-windows-amd64.zip"
 
-      if [ ! -f $tmp_dir/$otp_exe ]; then
-        local url="https://github.com/erlang/otp/releases/download/OTP-$otp_version/$otp_exe"
+      if [ ! -f $tmp_dir/$otp_zip ]; then
+        local url="https://github.com/elixir-install/otp_builds/releases/download/OTP-$otp_version/$otp_zip"
         echo "downloading $url"
-        curl --fail -L -o $tmp_dir/$otp_exe $url
+        curl --fail -L -o $tmp_dir/$otp_zip $url
       fi
 
-      mkdir -p $otp_dir
-      echo running $tmp_dir/$otp_exe
-      win_path=`cd $otp_dir && cmd.exe //c cd`
-      local cwd=`pwd`
-      cd $tmp_dir
-      cmd.exe //c $otp_exe //S /D=$win_path
-      cd $cwd
-      rm $tmp_dir/$otp_exe
+      echo "unpacking $otp_zip to $otp_dir..."
+      mkdir -p "$otp_dir"
+      unzip -q "$tmp_dir/$otp_zip" -d "$otp_dir"
+      (cd $otp_dir && ./Install.exe -sasl)
+      rm "$tmp_dir/$otp_zip"
     fi
 
     if [ "$os" = "darwin" ]; then
