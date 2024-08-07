@@ -28,6 +28,7 @@ call :main
 goto :eof
 
 :main
+call :install_vcredist
 call :install_otp
 set /p="checking OTP..."<nul
 set PATH=%otp_dir%\bin;%PATH%
@@ -43,6 +44,36 @@ echo.
 echo    set PATH=%%LOCALAPPDATA%%\elixir-install\installs\otp\%otp_version%\bin;%%PATH%%
 echo    set PATH=%%LOCALAPPDATA%%\elixir-install\installs\elixir\%elixir_version%-otp-%otp_release%\bin;%%PATH%%
 goto :eof
+
+:install_vcredist
+REG QUERY "HKLM\SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64" >nul 2>&1
+IF %ERRORLEVEL% EQU 0 (
+    exit /b 0
+)
+
+set url=https://aka.ms/vs/17/release/vc_redist.x64.exe
+set file=vc_redist.x64.exe
+
+echo Downloading VC++ Redistributable...
+curl --fail -L -o %file% %url%
+
+IF NOT EXIST %file% (
+    echo Failed to download the installer.
+    exit /b 1
+)
+
+echo Installing VC++ Redistributable...
+%file% /quiet /norestart
+
+REG QUERY "HKLM\SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64" >nul 2>&1
+IF %ERRORLEVEL% EQU 0 (
+    echo Installation successful.
+    del %file%
+    exit /b 0
+) ELSE (
+    echo Installation failed.
+    exit /b 1
+)
 
 :install_otp
 set otp_zip=OTP-%otp_version%-windows-amd64.zip

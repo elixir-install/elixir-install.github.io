@@ -62,6 +62,7 @@ install_otp() {
 
   if [ ! -d $otp_dir/bin ]; then
     if [ "$os" = "windows" ]; then
+      ensure_vcredist
       local otp_zip="OTP-$otp_version-windows-amd64.zip"
 
       if [ ! -f $tmp_dir/$otp_zip ]; then
@@ -109,6 +110,20 @@ install_otp() {
       rm "$tmp_dir/$otp_tgz"
     fi
   fi
+}
+
+ensure_vcredist() {
+  if [ -f /c/windows/system32/vcruntime140.dll ]; then
+    return
+  fi
+
+  url="https://aka.ms/vs/17/release/vc_redist.x64.exe"
+  file="vc_redist.x64.exe"
+
+  echo "downloading VC++ Redistributable $url..."
+  curl --fail -L -o "$file" "$url"
+  echo "installing VC++ Redistributable $url..."
+  ./"$file" /quiet /norestart
 }
 
 install_elixir() {
