@@ -17,6 +17,10 @@ defmodule Main do
           {~r/elixir_version=(\d.*?)\n/, ~s|elixir_version=#{vsn}\n|}
         ])
 
+        replace_file("elixir-install.ps1", [
+          {~r/\$elixirVersion = "(\d.*?)"/, ~s|$elixirVersion = "#{vsn}"|}
+        ])
+
         replace_file("index.html", [
           {~r/elixir@(.*?) /, "elixir@#{vsn} "},
           {~r/installs\/elixir\/(.*?)-otp/, "installs/elixir/#{vsn}-otp"},
@@ -30,6 +34,10 @@ defmodule Main do
 
         replace_file("elixir-install.bat", [
           {~r/otp_version=(\d.*?)\n/, ~s|otp_version=#{vsn}\n|}
+        ])
+
+        replace_file("elixir-install.ps1", [
+          {~r/\$otpVersion = "(.*?)"/, ~s|$otpVersion = "#{vsn}"|}
         ])
 
         [otp_release | _] = String.split(vsn, ".")

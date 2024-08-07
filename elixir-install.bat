@@ -86,7 +86,7 @@ if not exist "%otp_dir%\bin" (
     )
     powershell -Command "Expand-Archive -LiteralPath %tmp_dir%\%otp_zip% -DestinationPath %otp_dir%"
     del /f /q %tmp_dir%\%otp_zip%
-    cd %otp_dir%
+    cd /d "%otp_dir%"
     .\Install.exe -sasl
 )
 goto :eof

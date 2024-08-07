@@ -68,7 +68,7 @@ install_otp() {
       if [ ! -f $tmp_dir/$otp_zip ]; then
         local url="https://github.com/elixir-install/otp_builds/releases/download/OTP-$otp_version/$otp_zip"
         echo "downloading $url"
-        curl --fail -L -o $tmp_dir/$otp_zip $url
+        curl --retry 3 --fail -L -o $tmp_dir/$otp_zip $url
       fi
 
       echo "unpacking $otp_zip to $otp_dir..."
@@ -79,12 +79,12 @@ install_otp() {
     fi
 
     if [ "$os" = "darwin" ]; then
-      local otp_tgz="OTP-${otp_version}.tar.gz"
+      local otp_tgz="OTP-${otp_version}-macos-$arch.tar.gz"
 
       if [ ! -f $tmp_dir/$otp_tgz ]; then
-        local url="https://builds.hex.pm/builds/otp/${arch}/macos/$otp_tgz"
+        local url="https://github.com/elixir-install/otp_builds/releases/download/OTP-$otp_version/$otp_tgz"
         echo "downloading $url"
-        curl --fail -L -o "$tmp_dir/$otp_tgz" $url
+        curl --retry 3 --fail -L -o "$tmp_dir/$otp_tgz" $url
       fi
 
       echo "unpacking $otp_tgz to $otp_dir..."
@@ -100,7 +100,7 @@ install_otp() {
       if [ ! -f $tmp_dir/$otp_tgz ]; then
         local url="https://builds.hex.pm/builds/otp/$arch/ubuntu-22.04/$otp_tgz"
         echo "downloading $url"
-        curl --fail -L -o "$tmp_dir/$otp_tgz" $url
+        curl --retry 3 --fail -L -o "$tmp_dir/$otp_tgz" $url
       fi
 
       echo "unpacking $otp_tgz to $otp_dir..."
@@ -121,7 +121,7 @@ ensure_vcredist() {
   file="vc_redist.x64.exe"
 
   echo "downloading VC++ Redistributable $url..."
-  curl --fail -L -o "$file" "$url"
+  curl --retry 3 --fail -L -o "$file" "$url"
   echo "installing VC++ Redistributable $url..."
   ./"$file" /quiet /norestart
 }
@@ -133,7 +133,7 @@ install_elixir() {
     if [ ! -f "$tmp_dir/$elixir_zip" ]; then
       local url="https://github.com/elixir-lang/elixir/releases/download/v$elixir_version/$elixir_zip"
       echo "downloading $url"
-      curl --fail -L -o "$tmp_dir/$elixir_zip" $url
+      curl --retry 3 --fail -L -o "$tmp_dir/$elixir_zip" $url
     fi
     echo "unpacking $elixir_zip to $elixir_dir..."
     mkdir -p "$elixir_dir"
