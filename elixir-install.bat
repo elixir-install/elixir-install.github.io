@@ -16,7 +16,7 @@ for %%i in (%*) do (
     )
 )
 
-set root_dir=%LOCALAPPDATA%\elixir-install
+set root_dir=%USERPROFILE%\.elixir-install
 set tmp_dir=%root_dir%\Cache
 mkdir %tmp_dir% 2>nul
 
@@ -41,8 +41,8 @@ echo  ok
 echo.
 echo Add this to your shell:
 echo.
-echo    set PATH=%%LOCALAPPDATA%%\elixir-install\installs\otp\%otp_version%\bin;%%PATH%%
-echo    set PATH=%%LOCALAPPDATA%%\elixir-install\installs\elixir\%elixir_version%-otp-%otp_release%\bin;%%PATH%%
+echo    set PATH=%%USERPROFILE%%\.elixir-install\installs\otp\%otp_version%\bin;%%PATH%%
+echo    set PATH=%%USERPROFILE%%\.elixir-install\installs\elixir\%elixir_version%-otp-%otp_release%\bin;%%PATH%%
 goto :eof
 
 :install_vcredist

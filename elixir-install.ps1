@@ -20,7 +20,7 @@ function Main {
         }
     }
 
-    $rootDir = "$env:LOCALAPPDATA\elixir-install"
+    $rootDir = "$env:USERPROFILE\.elixir-install"
     $tmpDir = "$rootDir\tmp"
     New-Item -ItemType Directory -Force -Path $tmpDir | Out-Null
 
@@ -35,11 +35,10 @@ function Main {
     Write-Host (erl -noshell -eval "io:put_chars(erlang:system_info(otp_release)), halt()." | Out-String) -NoNewLine
     InstallElixir
     Write-Host "checking Elixir... " -NoNewline
-    $env:PATH = "$elixirDir\bin;$env:PATH"
     Write-Host (elixir -e "IO.puts System.version()" | Out-String) -NoNewLine
     Write-Host "`nAdd this to your PowerShell profile:`n"
-    Write-Host "    `$env:PATH = `"`$env:LOCALAPPDATA\elixir-install\installs\otp\$otpVersion\bin;`$env:PATH`""
-    Write-Host "    `$env:PATH = `"`$env:LOCALAPPDATA\elixir-install\installs\elixir\$elixirVersion-otp-$otpRelease\bin;`$env:PATH`"`n"
+    Write-Host "    `$env:PATH = `"`$env:USERPROFILE\.elixir-install\installs\otp\$otpVersion\bin;`$env:PATH`""
+    Write-Host "    `$env:PATH = `"`$env:USERPROFILE\.elixir-install\installs\elixir\$elixirVersion-otp-$otpRelease\bin;`$env:PATH`"`n"
 }
 
 function InstallOTP {
