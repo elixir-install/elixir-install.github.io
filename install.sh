@@ -35,13 +35,15 @@ main() {
   otp_dir="$root_dir/installs/otp/$otp_version"
   elixir_dir="$root_dir/installs/elixir/$elixir_version-otp-$elixir_otp_release"
 
-  install_otp
+  install_otp &
+  install_elixir &
+  wait
+
   printf "checking OTP... "
   PATH="$otp_dir/bin:$PATH" export PATH
   erl -noshell -eval "io:put_chars(erlang:system_info(otp_release)), halt()."
   echo " ok"
 
-  install_elixir
   printf "checking Elixir... "
   "$elixir_dir/bin/elixir" -e "IO.write(System.version())"
   echo " ok"
