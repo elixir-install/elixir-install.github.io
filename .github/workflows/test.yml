@@ -16,8 +16,8 @@ jobs:
 
       - name: Test
         run: |
-          sh install.sh elixir@1.17.3 otp@27.1
-          export PATH=$HOME/.elixir-install/installs/otp/27.1/bin:$PATH
+          sh install.sh elixir@1.17.3 otp@27.1.2
+          export PATH=$HOME/.elixir-install/installs/otp/27.1.2/bin:$PATH
           export PATH=$HOME/.elixir-install/installs/elixir/1.17.3-otp-27/bin:$PATH
           elixir -e "IEx.Helpers.runtime_info(:system)"
 
@@ -30,8 +30,8 @@ jobs:
 
       - name: Test
         run: |
-          sh install.sh elixir@1.17.3 otp@27.1
-          export PATH=$HOME/.elixir-install/installs/otp/27.1/bin:$PATH
+          sh install.sh elixir@1.17.3 otp@27.1.2
+          export PATH=$HOME/.elixir-install/installs/otp/27.1.2/bin:$PATH
           export PATH=$HOME/.elixir-install/installs/elixir/1.17.3-otp-27/bin:$PATH
           elixir -e "IEx.Helpers.runtime_info(:system)"
 
@@ -45,8 +45,8 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          sh install.sh elixir@1.17.3 otp@27.1
-          export PATH=$HOME/.elixir-install/installs/otp/27.1/bin:$PATH
+          sh install.sh elixir@1.17.3 otp@27.1.2
+          export PATH=$HOME/.elixir-install/installs/otp/27.1.2/bin:$PATH
           export PATH=$HOME/.elixir-install/installs/elixir/1.17.3-otp-27/bin:$PATH
           elixir -e "IEx.Helpers.runtime_info(:system)"
 
@@ -59,8 +59,8 @@ jobs:
 
       - name: Test
         run: |
-          pwsh install.ps1 elixir@1.17.3 otp@27.1
-          $env:PATH = "$env:USERPROFILE\.elixir-install\installs\otp\27.1\bin;$env:PATH"
+          pwsh install.ps1 elixir@1.17.3 otp@27.1.2
+          $env:PATH = "$env:USERPROFILE\.elixir-install\installs\otp\27.1.2\bin;$env:PATH"
           $env:PATH = "$env:USERPROFILE\.elixir-install\installs\elixir\1.17.3-otp-27\bin;$env:PATH"
           elixir -e "IEx.Helpers.runtime_info :system"
 
@@ -73,7 +73,7 @@ jobs:
 
       - name: Test
         run: |
-          .\install.bat elixir@1.17.3 otp@27.1
-          $env:PATH = "$env:USERPROFILE\.elixir-install\installs\otp\27.1\bin;$env:PATH"
+          .\install.bat elixir@1.17.3 otp@27.1.2
+          $env:PATH = "$env:USERPROFILE\.elixir-install\installs\otp\27.1.2\bin;$env:PATH"
           $env:PATH = "$env:USERPROFILE\.elixir-install\installs\elixir\1.17.3-otp-27\bin;$env:PATH"
           elixir -e "IEx.Helpers.runtime_info :system"
