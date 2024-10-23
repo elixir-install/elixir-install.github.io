@@ -4,7 +4,7 @@ Set-StrictMode -Version Latest
 function Main {
     param([string[]]$argv)
 
-    $otpVersion = "27.1"
+    $otpVersion = "27.1.2"
     $elixirVersion = "1.17.3"
 
     foreach ($arg in $argv) {

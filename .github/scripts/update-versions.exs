@@ -9,25 +9,25 @@ defmodule Main do
   def main(argv) do
     Enum.each(argv, fn
       "elixir@" <> vsn ->
-        replace_file("elixir-install", [
-          {~r/elixir_version="(\d.*?)"/, ~s|elixir_version="#{vsn}"|}
-        ])
+        # replace_file("elixir-install", [
+        #   {~r/elixir_version="(\d.*?)"/, ~s|elixir_version="#{vsn}"|}
+        # ])
 
         replace_file("install.sh", [
           {~r/elixir_version="(\d.*?)"/, ~s|elixir_version="#{vsn}"|}
         ])
 
-        replace_file("elixir-install.bat", [
-          {~r/elixir_version=(\d.*?)\n/, ~s|elixir_version=#{vsn}\n|}
-        ])
+        # replace_file("elixir-install.bat", [
+        #   {~r/elixir_version=(\d.*?)\n/, ~s|elixir_version=#{vsn}\n|}
+        # ])
 
         replace_file("install.bat", [
           {~r/elixir_version=(\d.*?)\n/, ~s|elixir_version=#{vsn}\n|}
         ])
 
-        replace_file("elixir-install.ps1", [
-          {~r/\$elixirVersion = "(\d.*?)"/, ~s|$elixirVersion = "#{vsn}"|}
-        ])
+        # replace_file("elixir-install.ps1", [
+        #   {~r/\$elixirVersion = "(\d.*?)"/, ~s|$elixirVersion = "#{vsn}"|}
+        # ])
 
         replace_file("install.ps1", [
           {~r/\$elixirVersion = "(\d.*?)"/, ~s|$elixirVersion = "#{vsn}"|}
@@ -46,25 +46,25 @@ defmodule Main do
         ])
 
       "otp@" <> vsn ->
-        replace_file("elixir-install", [
-          {~r/otp_version="(\d.*?)"/, ~s|otp_version="#{vsn}"|}
-        ])
+        # replace_file("elixir-install", [
+        #   {~r/otp_version="(\d.*?)"/, ~s|otp_version="#{vsn}"|}
+        # ])
 
         replace_file("install.sh", [
           {~r/otp_version="(\d.*?)"/, ~s|otp_version="#{vsn}"|}
         ])
 
-        replace_file("elixir-install.bat", [
-          {~r/otp_version=(\d.*?)\n/, ~s|otp_version=#{vsn}\n|}
-        ])
+        # replace_file("elixir-install.bat", [
+        #   {~r/otp_version=(\d.*?)\n/, ~s|otp_version=#{vsn}\n|}
+        # ])
 
         replace_file("install.bat", [
           {~r/otp_version=(\d.*?)\n/, ~s|otp_version=#{vsn}\n|}
         ])
 
-        replace_file("elixir-install.ps1", [
-          {~r/\$otpVersion = "(.*?)"/, ~s|$otpVersion = "#{vsn}"|}
-        ])
+        # replace_file("elixir-install.ps1", [
+        #   {~r/\$otpVersion = "(.*?)"/, ~s|$otpVersion = "#{vsn}"|}
+        # ])
 
         replace_file("install.ps1", [
           {~r/\$otpVersion = "(.*?)"/, ~s|$otpVersion = "#{vsn}"|}

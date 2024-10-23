@@ -1,7 +1,7 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-set otp_version=27.1
+set otp_version=27.1.2
 set elixir_version=1.17.3
 
 for %%i in (%*) do (

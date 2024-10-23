@@ -2,7 +2,7 @@
 set -eu
 
 main() {
-  otp_version="27.1"
+  otp_version="27.1.2"
   elixir_version="1.17.3"
 
   for arg in "$@"; do
