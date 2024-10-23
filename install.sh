@@ -68,8 +68,14 @@ install_otp() {
 
   arch=$(uname -m)
   case "$arch" in
-    x86_64) arch=amd64 ;;
-    aarch64|arm64) arch=arm64 ;;
+    x86_64)
+      macos_target=x86_64-apple-darwin
+      linux_target=amd64
+      ;;
+    aarch64|arm64)
+      macos_target=aarch64-apple-darwin
+      linux_target=arm64
+      ;;
     *) echo "error: unsupported architecture: $arch." && exit 1 ;;
   esac
 
@@ -98,10 +104,10 @@ install_otp() {
     if [ "$os" = "darwin" ]; then
       if [ "${otp_version}" = "master" ] || echo "${otp_version}" | grep -q '^maint'; then
         ref="${otp_version}-latest"
-        otp_tgz="${otp_version}-macos-$arch.tar.gz"
+        otp_tgz="${otp_version}-${macos_target}.tar.gz"
       else
         ref="OTP-${otp_version}"
-        otp_tgz="$ref-macos-$arch.tar.gz"
+        otp_tgz="$ref-${macos_target}.tar.gz"
       fi
 
       if [ ! -f "$tmp_dir/$otp_tgz" ]; then
@@ -124,7 +130,7 @@ install_otp() {
       fi
 
       if [ ! -f "$tmp_dir/$otp_tgz" ]; then
-        url="https://builds.hex.pm/builds/otp/$arch/ubuntu-22.04/$otp_tgz"
+        url="https://builds.hex.pm/builds/otp/$linux_target/ubuntu-22.04/$otp_tgz"
         echo "downloading $url"
         curl --retry 3 -fsSLo "$tmp_dir/$otp_tgz" "$url"
       fi
