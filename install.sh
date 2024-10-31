@@ -1,8 +1,11 @@
 #!/bin/sh
+# See latest version at:
+# https://github.com/elixir-lang/elixir-lang.github.com/blob/main/install.sh
+
 set -eu
 
-otp_version="27.1.2"
-elixir_version="1.17.3"
+otp_version=latest
+elixir_version=latest
 force=false
 
 usage() {
@@ -14,6 +17,8 @@ Arguments:
   elixir@VERSION   Install specific Elixir version
   otp@VERSION      Install specific Erlang/OTP version
 
+By default, elixir@latest and otp@latest are installed.
+
 Options:
 
   -f, --force      Forces installation even if it was previously installed
@@ -21,12 +26,11 @@ Options:
 
 Examples:
 
-  # install default versions (Elixir $elixir_version, OTP $otp_version)
   sh install.sh
-
   sh install.sh elixir@1.16.3 otp@26.2.5.4
   sh install.sh elixir@main
-  sh install.sh elixir@latest
+  sh install.sh elixir@main otp@master
+
 EOF
   exit 0
 }
@@ -57,40 +61,46 @@ main() {
   tmp_dir="$root_dir/tmp"
   mkdir -p "$tmp_dir"
 
-  otp_release="${otp_version%%.*}"
+  if [ "${otp_version}" = latest ]; then
+    url=$(curl -fsS --head https://github.com/erlef/otp_builds/releases/latest | grep -i '^location:' | awk '{print $2}' | tr -d '\r\n')
+    tag=$(basename "$url")
+    otp_version="${tag#OTP-}"
+  fi
+
+  if [ "${elixir_version}" = latest ]; then
+    url=$(curl -fsS --head https://github.com/elixir-lang/elixir/releases/latest | grep -i '^location:' | awk '{print $2}' | tr -d '\r\n')
+    tag=$(basename "$url")
+    elixir_version="${tag#v}"
+  fi
 
   case "${otp_version}" in
-    master|maint*|latest)
-      elixir_otp_release=27
+    master|maint*)
+      branch_version=$(curl -fsS https://raw.githubusercontent.com/erlang/otp/refs/heads/${otp_version}/OTP_VERSION | tr -d '\n')
+      elixir_otp_release="${branch_version%%.*}"
       ;;
-
     *)
-      elixir_otp_release=$otp_release
+      elixir_otp_release="${otp_version%%.*}"
+      ;;
+  esac
+
+  case "$elixir_version" in
+    1.14.*)
+      [ "${elixir_otp_release}" -ge 25 ] && elixir_otp_release=25
+      ;;
+    1.15.*|1.16.*)
+      [ "${elixir_otp_release}" -ge 26 ] && elixir_otp_release=26
+      ;;
+    *)
+      [ "${elixir_otp_release}" -ge 27 ] && elixir_otp_release=27
       ;;
   esac
 
   otp_dir="$root_dir/installs/otp/$otp_version"
-  elixir_dir="$root_dir/installs/elixir/$elixir_version-otp-$elixir_otp_release"
+  elixir_dir="${root_dir}/installs/elixir/${elixir_version}-otp-${elixir_otp_release}"
 
   install_otp &
   install_elixir &
   wait
-
-  if [ "${elixir_version}" = latest ]; then
-    elixir_version=$(cat "${elixir_dir}/VERSION" | tr -d '\n')
-    old_elixir_dir="${elixir_dir}"
-    elixir_dir="${root_dir}/installs/elixir/${elixir_version}-otp-${elixir_otp_release}"
-    rm -rf "${elixir_dir}"
-    mv "${old_elixir_dir}" "${elixir_dir}"
-  fi
-
-  if [ "${otp_version}" = latest ]; then
-    otp_version=$(cat "${otp_dir}"/releases/*/OTP_VERSION | tr -d '\n')
-    old_otp_dir="${otp_dir}"
-    otp_dir="$root_dir/installs/otp/${otp_version}"
-    rm -rf "${otp_dir}"
-    mv "${old_otp_dir}" "${otp_dir}"
-  fi
 
   printf "checking OTP... "
   export PATH="$otp_dir/bin:$PATH"
@@ -143,12 +153,7 @@ install_otp_darwin() {
   esac
 
   otp_tgz="otp-${target}.tar.gz"
-
-  if [ "${otp_version}" = "latest" ]; then
-    url="https://github.com/erlef/otp_builds/releases/latest/download/$otp_tgz"
-  else
-    url="https://github.com/erlef/otp_builds/releases/download/$ref/$otp_tgz"
-  fi
+  url="https://github.com/erlef/otp_builds/releases/download/$ref/$otp_tgz"
 
   download "$url" "$tmp_dir/$otp_tgz"
 
@@ -162,10 +167,6 @@ install_otp_linux() {
   case "${otp_version}" in
     master|maint*)
       otp_tgz="${otp_version}.tar.gz"
-      ;;
-    latest)
-      otp_version=$(latest_otp_version)
-      otp_tgz="OTP-${otp_version}.tar.gz"
       ;;
     *)
       otp_tgz="OTP-${otp_version}.tar.gz"
@@ -205,10 +206,6 @@ install_otp_linux() {
 }
 
 install_otp_windows() {
-  if [ "${otp_version}" = latest ]; then
-    otp_version=$(latest_otp_version)
-  fi
-
   otp_zip="otp_win64_$otp_version.zip"
   url="https://github.com/erlang/otp/releases/download/OTP-$otp_version/$otp_zip"
   download "$url" "$tmp_dir/$otp_zip"
@@ -227,10 +224,6 @@ install_vc_redist() {
   fi
 }
 
-latest_otp_version() {
-  curl --retry 3 -fsS https://api.github.com/repos/erlef/otp_builds/releases/latest | grep '"tag_name":' | sed -n 's/.*"tag_name": "OTP-\(.*\)".*/\1/p'
-}
-
 install_elixir() {
   elixir_zip="elixir-otp-$elixir_otp_release.zip"
 
@@ -247,12 +240,7 @@ install_elixir() {
         ;;
     esac
 
-    if [ "${elixir_version}" = latest ]; then
-      url="https://github.com/elixir-lang/elixir/releases/latest/download/$elixir_zip"
-    else
-      url="https://github.com/elixir-lang/elixir/releases/download/$ref/$elixir_zip"
-    fi
-
+    url="https://github.com/elixir-lang/elixir/releases/download/$ref/$elixir_zip"
     download "$url" "$tmp_dir/$elixir_zip"
 
     echo "unpacking $elixir_zip to $elixir_dir..."
