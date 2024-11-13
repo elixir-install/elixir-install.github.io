@@ -4,20 +4,16 @@
 
 set -eu
 
-otp_version=latest
-elixir_version=latest
+otp_version=
+elixir_version=
 force=false
 
 usage() {
   cat<<EOF
-Usage: install.sh [arguments] [options]
+Usage: install.sh elixir@ELIXIR_VERSION otp@OTP_VERSION [options]
 
-Arguments:
-
-  elixir@VERSION   Install specific Elixir version
-  otp@VERSION      Install specific Erlang/OTP version
-
-By default, elixir@latest and otp@latest are installed.
+ELIXIR_VERSION can be X.Y.Z, latest, or main.
+OTP_VERSION can be X.Y.Z, latest, master, maint, or maint-RELEASE (e.g. maint-27).
 
 Options:
 
@@ -26,13 +22,11 @@ Options:
 
 Examples:
 
-  sh install.sh
   sh install.sh elixir@1.16.3 otp@26.2.5.4
-  sh install.sh elixir@main
+  sh install.sh elixir@latest otp@latest
   sh install.sh elixir@main otp@master
 
 EOF
-  exit 0
 }
 
 main() {
@@ -46,6 +40,7 @@ main() {
         ;;
       -h|--help)
         usage
+        exit 0
         ;;
       -f|--force)
         force=true
@@ -56,6 +51,18 @@ main() {
         ;;
     esac
   done
+
+  if [ -z "${elixir_version}" ]; then
+    usage
+    echo "error: missing elixir@VERSION argument"
+    exit 1
+  fi
+
+  if [ -z "${otp_version}" ]; then
+    usage
+    echo "error: missing otp@VERSION argument"
+    exit 1
+  fi
 
   root_dir="$HOME/.elixir-install"
   tmp_dir="$root_dir/tmp"
@@ -98,9 +105,16 @@ main() {
   otp_dir="$root_dir/installs/otp/$otp_version"
   elixir_dir="${root_dir}/installs/elixir/${elixir_version}-otp-${elixir_otp_release}"
 
-  install_otp &
-  install_elixir &
-  wait
+  if unzip_available; then
+    install_otp &
+    install_elixir &
+    wait
+  else
+    # if unzip is missing (e.g. official docker ubuntu image), install otp and elixir
+    # serially because we unzip elixir using OTP zip:extract/2.
+    install_otp
+    install_elixir
+  fi
 
   printf "checking OTP... "
   export PATH="$otp_dir/bin:$PATH"
@@ -112,7 +126,7 @@ main() {
   export PATH="$elixir_dir/bin:$PATH"
 cat<<EOF
 
-Add this to your shell:
+Run this (or add to your ~/.bashrc or similar file):
 
     export PATH=\$HOME/.elixir-install/installs/otp/$otp_version/bin:\$PATH
     export PATH=\$HOME/.elixir-install/installs/elixir/$elixir_version-otp-$elixir_otp_release/bin:\$PATH
@@ -246,7 +260,15 @@ install_elixir() {
     echo "unpacking $elixir_zip to $elixir_dir..."
     rm -rf "${elixir_dir}"
     mkdir -p "${elixir_dir}"
-    unzip -q "${tmp_dir}/${elixir_zip}" -d "${elixir_dir}"
+
+    if unzip_available; then
+      unzip -q "${tmp_dir}/${elixir_zip}" -d "${elixir_dir}"
+    else
+      "${otp_dir}/bin/erl" -noshell -eval \
+        '[Zip,Dir] = init:get_plain_arguments(), {ok,_} = zip:unzip(Zip, [{cwd, Dir}]), halt().' \
+        -- "${tmp_dir}/${elixir_zip}" "${elixir_dir}"
+    fi
+
     rm "${tmp_dir}/${elixir_zip}"
   fi
 }
@@ -256,6 +278,10 @@ download() {
   output="$2"
   echo "downloading $url"
   curl --retry 3 -fsSLo "$output" "$url"
+}
+
+unzip_available() {
+  which unzip >/dev/null 2>&1
 }
 
 main "$@"
