@@ -7,6 +7,7 @@ set -eu
 otp_version=
 elixir_version=
 force=false
+quiet=false
 
 usage() {
   cat<<EOF
@@ -41,6 +42,9 @@ main() {
       -h|--help)
         usage
         exit 0
+        ;;
+      -q|--quiet)
+        quiet=true
         ;;
       -f|--force)
         force=true
@@ -116,6 +120,7 @@ main() {
     install_elixir
   fi
 
+if [ "$quiet" = "false" ]; then
   printf "checking OTP... "
   export PATH="$otp_dir/bin:$PATH"
   erl -noshell -eval 'io:put_chars(erlang:system_info(otp_release) ++ " ok\n"), halt().'
@@ -132,6 +137,7 @@ Run this (or add to your ~/.bashrc or similar file):
     export PATH=\$HOME/.elixir-install/installs/elixir/$elixir_version-otp-$elixir_otp_release/bin:\$PATH
 
 EOF
+fi
 }
 
 install_otp() {
